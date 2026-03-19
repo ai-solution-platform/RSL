@@ -144,16 +144,19 @@ export default function AdminDashboardPage() {
             {isEn ? 'Deals Over Time' : 'ดีลตามช่วงเวลา'}
           </h2>
           <div className="flex items-end gap-4 h-48">
-            {chartData.map((d) => (
-              <div key={d.month} className="flex-1 flex flex-col items-center gap-2">
-                <span className="text-xs font-medium text-gray-600">{d.value}</span>
-                <div
-                  className="w-full bg-blue-500 rounded-t-md transition-all"
-                  style={{ height: `${(d.value / maxVal) * 100}%` }}
-                />
-                <span className="text-xs text-gray-500">{d.month}</span>
-              </div>
-            ))}
+            {chartData.map((d) => {
+              const barHeight = Math.round((d.value / maxVal) * 140);
+              return (
+                <div key={d.month} className="flex-1 flex flex-col items-center justify-end h-full">
+                  <span className="text-xs font-medium text-gray-600 mb-1">{d.value}</span>
+                  <div
+                    className="w-full bg-blue-500 rounded-t-md transition-all min-h-[8px]"
+                    style={{ height: `${barHeight}px` }}
+                  />
+                  <span className="text-xs text-gray-500 mt-2">{d.month}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
