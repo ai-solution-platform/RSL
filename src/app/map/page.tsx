@@ -39,6 +39,12 @@ export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(null);
 
+  // Filter panel
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [budgetMax, setBudgetMax] = useState(500000);
+  const [sizeMin, setSizeMin] = useState(0);
+  const [selectedType, setSelectedType] = useState('all');
+
   // Layer toggles
   const [showSpaces, setShowSpaces] = useState(true);
   const [showZoning, setShowZoning] = useState(false);
@@ -172,22 +178,25 @@ export default function MapPage() {
               <X size={16} className="text-gray-400" />
             </button>
           )}
-          <button className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center">
+          <button
+            onClick={() => setShowFilterPanel((v) => !v)}
+            className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center active:bg-blue-100 transition-colors"
+          >
             <SlidersHorizontal size={14} className="text-blue-600" />
           </button>
         </div>
       </div>
 
       {/* Filter Chips Row */}
-      <div className="absolute top-16 left-0 right-0 z-[1000] px-3">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+      <div className="absolute top-[60px] left-0 right-0 z-[1000] px-3 py-1">
+        <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
           {filterChips.map((chip) => (
             <button
               key={chip.key}
               onClick={() => setActiveFilter(chip.key)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors shadow-sm ${
+              className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors shadow-sm ${
                 activeFilter === chip.key
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-blue-600 text-white shadow-blue-200'
                   : 'bg-white text-gray-600 border border-gray-200'
               }`}
             >
@@ -196,6 +205,107 @@ export default function MapPage() {
           ))}
         </div>
       </div>
+
+      {/* Advanced Filter Panel (ข้อ 1 - ปุ่ม filter ใช้งานได้) */}
+      {showFilterPanel && (
+        <div className="absolute top-[56px] left-0 right-0 z-[1001] px-3">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mt-1">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm text-gray-900">
+                {language === 'th' ? 'ตัวกรองขั้นสูง' : 'Advanced Filters'}
+              </h3>
+              <button onClick={() => setShowFilterPanel(false)}>
+                <X size={16} className="text-gray-400" />
+              </button>
+            </div>
+
+            {/* Budget */}
+            <div className="mb-3">
+              <label className="text-xs text-gray-500 mb-1 block">
+                {language === 'th' ? 'งบประมาณสูงสุด' : 'Max Budget'}:
+                <span className="text-blue-600 font-medium ml-1">
+                  {formatPrice(budgetMax)}/{language === 'th' ? 'ด.' : 'mo'}
+                </span>
+              </label>
+              <input
+                type="range"
+                min={10000}
+                max={500000}
+                step={5000}
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(Number(e.target.value))}
+                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div className="flex justify-between text-[10px] text-gray-400 mt-0.5">
+                <span>฿10K</span>
+                <span>฿500K</span>
+              </div>
+            </div>
+
+            {/* Min Size */}
+            <div className="mb-3">
+              <label className="text-xs text-gray-500 mb-1 block">
+                {language === 'th' ? 'ขนาดขั้นต่ำ' : 'Min Size'}:
+                <span className="text-blue-600 font-medium ml-1">{sizeMin} {language === 'th' ? 'ตร.ม.' : 'sqm'}</span>
+              </label>
+              <input
+                type="range"
+                min={0}
+                max={500}
+                step={10}
+                value={sizeMin}
+                onChange={(e) => setSizeMin(Number(e.target.value))}
+                className="w-full h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              />
+              <div className="flex justify-between text-[10px] text-gray-400 mt-0.5">
+                <span>0</span>
+                <span>500 sqm</span>
+              </div>
+            </div>
+
+            {/* Property Type */}
+            <div className="mb-3">
+              <label className="text-xs text-gray-500 mb-1.5 block">
+                {language === 'th' ? 'ประเภท' : 'Type'}
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  { key: 'all', th: 'ทั้งหมด', en: 'All' },
+                  { key: 'mall', th: 'ห้าง', en: 'Mall' },
+                  { key: 'street_shop', th: 'ตึกแถว', en: 'Street' },
+                  { key: 'community_mall', th: 'คอมมูนิตี้', en: 'Community' },
+                  { key: 'market', th: 'ตลาด', en: 'Market' },
+                ].map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={() => setSelectedType(t.key)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors ${
+                      selectedType === t.key
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {language === 'th' ? t.th : t.en}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Apply Button */}
+            <button
+              onClick={() => {
+                setActiveFilter(selectedType);
+                setShowFilterPanel(false);
+              }}
+              className="w-full py-2 bg-orange-500 text-white rounded-xl text-sm font-semibold active:bg-orange-600 transition-colors"
+            >
+              {language === 'th'
+                ? `แสดงผลลัพธ์ (${filteredProperties.length})`
+                : `Show Results (${filteredProperties.length})`}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Layer Toggle Panel (top-right) */}
       <div className="absolute right-3 top-28 z-[1000]">
@@ -249,11 +359,12 @@ export default function MapPage() {
         )}
       </div>
 
-      {/* Bottom Sheet */}
+      {/* Bottom Sheet — collapsed ~8% of screen, expanded ~45% */}
       <div
-        className="absolute bottom-0 left-0 right-0 z-[1000] bg-white rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] transition-all duration-300 ease-in-out"
+        className="absolute bottom-0 left-0 right-0 z-[1000] bg-white rounded-t-2xl shadow-[0_-2px_12px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out"
         style={{
-          maxHeight: bottomSheetExpanded ? '40%' : '120px',
+          height: bottomSheetExpanded ? '45%' : '8%',
+          minHeight: bottomSheetExpanded ? '280px' : '48px',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -262,67 +373,67 @@ export default function MapPage() {
         {/* Drag Handle */}
         <button
           onClick={() => setBottomSheetExpanded(!bottomSheetExpanded)}
-          className="w-full flex items-center justify-center pt-2 pb-1 cursor-grab active:cursor-grabbing"
+          className="w-full flex flex-col items-center pt-1.5 pb-0.5 cursor-grab active:cursor-grabbing"
         >
-          <div className="w-10 h-1 bg-gray-300 rounded-full" />
+          <div className="w-8 h-1 bg-gray-300 rounded-full" />
+          <div className="w-full px-4 mt-1 flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 text-xs">
+              {language === 'th' ? 'พื้นที่ใกล้เคียง' : 'Nearby Spaces'}
+              <span className="ml-1 text-[10px] font-normal text-gray-400">
+                ({filteredProperties.length})
+              </span>
+            </h3>
+            <span className="text-[10px] text-blue-600">
+              {bottomSheetExpanded
+                ? (language === 'th' ? 'ซ่อน ▼' : 'Hide ▼')
+                : (language === 'th' ? 'ดูทั้งหมด ▲' : 'View all ▲')}
+            </span>
+          </div>
         </button>
 
-        <div className="px-4 pb-2 flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900 text-sm">
-            {language === 'th' ? 'พื้นที่ใกล้เคียง' : 'Nearby Spaces'}
-            <span className="ml-1.5 text-xs font-normal text-gray-400">
-              ({filteredProperties.length})
-            </span>
-          </h3>
-        </div>
-
-        {/* Property Mini Cards - scrollable when expanded */}
-        <div
-          className="px-4 pb-20 overflow-y-auto transition-all duration-300"
-          style={{
-            maxHeight: bottomSheetExpanded ? 'calc(40vh - 70px)' : '0px',
-            opacity: bottomSheetExpanded ? 1 : 0,
-          }}
-        >
-          <div className="space-y-2">
-            {filteredProperties.map((property) => (
-              <div
-                key={property.id}
-                className={`flex gap-3 p-2.5 rounded-xl border transition-colors cursor-pointer ${
-                  selectedPropertyId === property.id
-                    ? 'border-blue-400 bg-blue-50/50'
-                    : 'border-gray-100 bg-white hover:border-gray-200'
-                }`}
-                onClick={() => setSelectedPropertyId(property.id)}
-              >
-                <img
-                  src={property.images[0]}
-                  alt={property.title}
-                  className="w-16 h-16 rounded-lg object-cover shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-xs text-gray-900 truncate">
-                    {language === 'th' ? property.titleTh : property.title}
-                  </h4>
-                  <p className="text-[10px] text-gray-500 flex items-center gap-0.5 mt-0.5">
-                    <MapPin size={8} />
-                    {language === 'th'
-                      ? property.location.districtTh
-                      : property.location.district}
-                  </p>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-blue-600 font-bold text-xs">
-                      {formatPrice(property.price)}/{language === 'th' ? 'ด.' : 'mo'}
-                    </span>
-                    <span className="text-[10px] text-gray-400">
-                      {property.size} {language === 'th' ? 'ตร.ม.' : 'sqm'}
-                    </span>
+        {/* Property Mini Cards — only visible when expanded */}
+        {bottomSheetExpanded && (
+          <div className="px-3 pb-4 overflow-y-auto" style={{ height: 'calc(100% - 44px)' }}>
+            <div className="space-y-1.5">
+              {filteredProperties.map((property) => (
+                <div
+                  key={property.id}
+                  className={`flex gap-2.5 p-2 rounded-xl border transition-colors cursor-pointer ${
+                    selectedPropertyId === property.id
+                      ? 'border-blue-400 bg-blue-50/50'
+                      : 'border-gray-100 bg-white hover:border-gray-200'
+                  }`}
+                  onClick={() => setSelectedPropertyId(property.id)}
+                >
+                  <img
+                    src={property.images[0]}
+                    alt={property.title}
+                    className="w-14 h-14 rounded-lg object-cover shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-[11px] text-gray-900 truncate">
+                      {language === 'th' ? property.titleTh : property.title}
+                    </h4>
+                    <p className="text-[10px] text-gray-500 flex items-center gap-0.5 mt-0.5">
+                      <MapPin size={8} />
+                      {language === 'th'
+                        ? property.location.districtTh
+                        : property.location.district}
+                    </p>
+                    <div className="flex items-center justify-between mt-0.5">
+                      <span className="text-blue-600 font-bold text-[11px]">
+                        {formatPrice(property.price)}/{language === 'th' ? 'ด.' : 'mo'}
+                      </span>
+                      <span className="text-[10px] text-gray-400">
+                        {property.size} {language === 'th' ? 'ตร.ม.' : 'sqm'}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Hide scrollbar */}
