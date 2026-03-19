@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, MapPin, Flame, MessageCircle, User } from 'lucide-react';
+import { Search, MapPin, Flame, MessageCircle, User, LayoutDashboard } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { useAppStore } from '@/store';
+import { useMemo } from 'react';
 
 interface NavItem {
   key: string;
@@ -13,8 +14,16 @@ interface NavItem {
   icon: typeof Search;
 }
 
-const navItems: NavItem[] = [
+const tenantNavItems: NavItem[] = [
   { key: 'discover', labelKey: 'nav.discover', href: '/discover', icon: Search },
+  { key: 'map', labelKey: 'nav.map', href: '/map', icon: MapPin },
+  { key: 'feed', labelKey: 'nav.feed', href: '/feed', icon: Flame },
+  { key: 'chat', labelKey: 'nav.chat', href: '/chat', icon: MessageCircle },
+  { key: 'profile', labelKey: 'nav.profile', href: '/profile', icon: User },
+];
+
+const landlordNavItems: NavItem[] = [
+  { key: 'dashboard', labelKey: 'nav.dashboard', href: '/landlord', icon: LayoutDashboard },
   { key: 'map', labelKey: 'nav.map', href: '/map', icon: MapPin },
   { key: 'feed', labelKey: 'nav.feed', href: '/feed', icon: Flame },
   { key: 'chat', labelKey: 'nav.chat', href: '/chat', icon: MessageCircle },
@@ -25,6 +34,12 @@ export function BottomNav() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const notifications = useAppStore((s) => s.notifications);
+  const userRole = useAppStore((s) => s.userRole);
+
+  const navItems = useMemo(
+    () => (userRole === 'landlord' ? landlordNavItems : tenantNavItems),
+    [userRole]
+  );
 
   return (
     <nav className="fixed bottom-0 inset-x-0 z-50 bg-white border-t border-gray-200">

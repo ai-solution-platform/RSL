@@ -5,7 +5,7 @@ import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
 
 /** Routes where bottom nav and header should be hidden */
-const HIDE_SHELL_ROUTES = ['/login', '/register', '/onboarding'];
+const HIDE_SHELL_ROUTES = ['/login', '/register', '/onboarding', '/admin'];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

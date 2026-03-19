@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from '@/lib/i18n';
 import { useAppStore } from '@/store';
 import { users } from '@/data/users';
@@ -252,7 +253,7 @@ export default function ProfilePage() {
               iconColor: 'text-cyan-600',
               en: 'Help & Support',
               th: 'ช่วยเหลือและสนับสนุน',
-              href: '#',
+              href: '/help',
             },
             {
               icon: Shield,
@@ -260,7 +261,7 @@ export default function ProfilePage() {
               iconColor: 'text-violet-600',
               en: 'Privacy Policy',
               th: 'นโยบายความเป็นส่วนตัว',
-              href: '#',
+              href: '/privacy',
             },
             {
               icon: Info,
@@ -268,13 +269,14 @@ export default function ProfilePage() {
               iconColor: 'text-blue-600',
               en: 'About RSL Platform',
               th: 'เกี่ยวกับ RSL Platform',
-              href: '#',
+              href: '/about',
             },
           ].map((link, i) => {
             const Icon = link.icon;
             return (
-              <button
+              <Link
                 key={i}
+                href={link.href}
                 className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
@@ -286,7 +288,7 @@ export default function ProfilePage() {
                   </span>
                 </div>
                 <ChevronRight size={16} className="text-gray-300" />
-              </button>
+              </Link>
             );
           })}
         </div>

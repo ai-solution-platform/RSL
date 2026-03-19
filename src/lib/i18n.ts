@@ -10,6 +10,7 @@ const translations: Record<'th' | 'en', Record<TranslationKey, string>> = {
     'nav.feed': 'ฟีด',
     'nav.chat': 'แชท',
     'nav.profile': 'โปรไฟล์',
+    'nav.dashboard': 'แดชบอร์ด',
 
     // Header
     'header.appName': 'RSL',
@@ -192,6 +193,7 @@ const translations: Record<'th' | 'en', Record<TranslationKey, string>> = {
     'nav.feed': 'Feed',
     'nav.chat': 'Chat',
     'nav.profile': 'Profile',
+    'nav.dashboard': 'Dashboard',
 
     // Header
     'header.appName': 'RSL',
