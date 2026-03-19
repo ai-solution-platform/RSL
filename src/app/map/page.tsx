@@ -159,9 +159,9 @@ export default function MapPage() {
       </div>
 
       {/* Search Bar Overlay */}
-      <div className="absolute top-0 left-0 right-0 z-[1000] pt-3 px-3">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center gap-2 px-3 py-2.5">
-          <Search size={18} className="text-gray-400 shrink-0" />
+      <div className="absolute top-0 left-0 right-0 z-[1000] pt-2 px-3">
+        <div className="bg-white rounded-xl shadow-md border border-gray-100 flex items-center gap-1.5 px-2.5 py-1.5">
+          <Search size={15} className="text-gray-400 shrink-0" />
           <input
             type="text"
             value={searchQuery}
@@ -171,30 +171,30 @@ export default function MapPage() {
                 ? 'ค้นหาพื้นที่ ย่าน หรือถนน...'
                 : 'Search spaces, areas, or streets...'
             }
-            className="flex-1 text-sm outline-none placeholder:text-gray-400 bg-transparent"
+            className="flex-1 text-xs outline-none placeholder:text-gray-400 bg-transparent"
           />
           {searchQuery && (
             <button onClick={() => setSearchQuery('')}>
-              <X size={16} className="text-gray-400" />
+              <X size={14} className="text-gray-400" />
             </button>
           )}
           <button
             onClick={() => setShowFilterPanel((v) => !v)}
-            className="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center active:bg-blue-100 transition-colors"
+            className="w-7 h-7 bg-blue-50 rounded-md flex items-center justify-center active:bg-blue-100 transition-colors"
           >
-            <SlidersHorizontal size={14} className="text-blue-600" />
+            <SlidersHorizontal size={13} className="text-blue-600" />
           </button>
         </div>
       </div>
 
       {/* Filter Chips Row */}
-      <div className="absolute top-[60px] left-0 right-0 z-[1000] px-3 py-1">
+      <div className="absolute top-[44px] left-0 right-0 z-[1000] px-3 pt-1.5 pb-1">
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
           {filterChips.map((chip) => (
             <button
               key={chip.key}
               onClick={() => setActiveFilter(chip.key)}
-              className={`px-2.5 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors shadow-sm ${
+              className={`px-2 py-0.5 rounded-full text-[10px] font-medium whitespace-nowrap transition-colors shadow-sm ${
                 activeFilter === chip.key
                   ? 'bg-blue-600 text-white shadow-blue-200'
                   : 'bg-white text-gray-600 border border-gray-200'
@@ -208,7 +208,7 @@ export default function MapPage() {
 
       {/* Advanced Filter Panel (ข้อ 1 - ปุ่ม filter ใช้งานได้) */}
       {showFilterPanel && (
-        <div className="absolute top-[56px] left-0 right-0 z-[1001] px-3">
+        <div className="absolute top-[44px] left-0 right-0 z-[1001] px-3">
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mt-1">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-sm text-gray-900">
@@ -308,7 +308,7 @@ export default function MapPage() {
       )}
 
       {/* Layer Toggle Panel (top-right) */}
-      <div className="absolute right-3 top-28 z-[1000]">
+      <div className="absolute right-3 top-[72px] z-[1000]">
         <button
           onClick={() => setShowLayerPanel(!showLayerPanel)}
           className="w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center border border-gray-100 hover:bg-gray-50"
